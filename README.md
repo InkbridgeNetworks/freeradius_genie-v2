@@ -110,7 +110,7 @@ We also need to configure the MySQL server to allow remote access from Sonar, so
 
 This makes the MySQL server listen for connections on all interfaces on the server, rather than just to localhost (127.0.0.1). Now we need to setup a remote user account, so that your Sonar instance can access the database. To do this, select **Add a remote access user** in the same menu.
 
-Genie will ask you for the IP address of the remote server. If you don't know the IP of your Sonar instance, you can ping it to get the IP:
+Genie will ask you to use the defaults or the IP address of the remote server. It is recommended to use the Sonar defaults for Sonar V2 instances. If using Sonar V1 and you don't know the IP of your Sonar instance, you can ping it to get the IP:
 
 ![Ping](https://github.com/SonarSoftware/freeradius_genie/blob/master/images/ping.png)
 
