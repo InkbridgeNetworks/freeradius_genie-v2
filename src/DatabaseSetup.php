@@ -129,6 +129,7 @@ class DatabaseSetup
             {
                 $this->climate->lightMagenta("Using egress IPs of Sonar..");
                 $ipAddresses = ['20.221.112.37', '20.221.114.13', '52.158.209.86'];
+                break;
             }
             elseif (filter_var($ipAddress, FILTER_VALIDATE_IP) === false)
             {
@@ -152,12 +153,12 @@ class DatabaseSetup
             $password .= $characters[rand(0, strlen($characters) - 1)];
         }
 
-        $sth = $this->dbh->prepare("GRANT ALL ON radius.* TO ?@? IDENTIFIED BY ?");
-        for ($i=0; $i < count($ipAddresses); i++) {
-            if ($sth->execute([$username, $ipAddresses[$i], $password]))
+        $stc = $this->dbh->prepare("CREATE USER ?@? IDENTIFIED BY ?");
+        $sth = $this->dbh->prepare("GRANT ALL ON radius.* TO ?@?");
+        for ($i=0; $i < count($ipAddresses); $i++) {
+            if ($stc->execute([$username, $ipAddresses[$i], $password]) && $sth->execute([$username, $ipAddresses[$i]]))
             {
-                $sth = $this->dbh->prepare("FLUSH PRIVILEGES");
-                $sth->execute();
+                $this->dbh->prepare("FLUSH PRIVILEGES")->execute();
                 $this->climate->lightMagenta("Added a user with the username $username and the password $password. Copy this username and password, you'll need it!");
             }
             else
