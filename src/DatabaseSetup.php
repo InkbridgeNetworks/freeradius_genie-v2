@@ -155,15 +155,19 @@ class DatabaseSetup
 
         $stc = $this->dbh->prepare("CREATE USER ?@? IDENTIFIED BY ?");
         $sth = $this->dbh->prepare("GRANT ALL ON radius.* TO ?@?");
+        $success = true;
         for ($i=0; $i < count($ipAddresses); $i++) {
             if (!$stc->execute([$username, $ipAddresses[$i], $password]) || !$sth->execute([$username, $ipAddresses[$i]]))
             {
                 $this->climate->shout("Failed to create the user!");
+                $success = false;
                 break;
             }
         }
-        $this->dbh->prepare("FLUSH PRIVILEGES")->execute();
-        $this->climate->lightMagenta("Added a user with the username $username and the password $password. Copy this username and password, you'll need it!");
+        if ($success) {
+            $this->dbh->prepare("FLUSH PRIVILEGES")->execute();
+            $this->climate->lightMagenta("Added a user with the username $username and the password $password. Copy this username and password, you'll need it!");
+        }
     }
 
     /**
