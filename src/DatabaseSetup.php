@@ -115,20 +115,32 @@ class DatabaseSetup
      */
     public function addRemoteAccessUser()
     {
-        $input = $this->climate->lightBlue()->input("What is the IP address of the remote server that will be accessing the database?");
+        $input = $this->climate->lightBlue()->input("Enter 'd' for Sonar defaults or IP address of the remote server that will be accessing the database.");
+        $ipAddresses = [];
         $ipAddress = null;
         while ($ipAddress == null || filter_var($ipAddress, FILTER_VALIDATE_IP) === false)
         {
             $ipAddress = $input->prompt();
             if ($ipAddress == null)
             {
-                $this->climate->shout("You must input an IP address.");
+                $this->climate->shout("You must input an IP address or 'd' for Sonar defaults.");
+            }
+            elseif ($ipAddress === 'd')
+            {
+                $this->climate->lightMagenta("Using egress IPs of Sonar..");
+                $ipAddresses = ['20.221.112.37', '20.221.114.13', '52.158.209.86'];
+                break;
             }
             elseif (filter_var($ipAddress, FILTER_VALIDATE_IP) === false)
             {
                 $this->climate->shout("That IP address is not valid.");
             }
+            else
+            {
+                $ipAddresses[] = $ipAddress;
+            }
         }
+        
 
         $characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
         $username = '';
@@ -141,16 +153,20 @@ class DatabaseSetup
             $password .= $characters[rand(0, strlen($characters) - 1)];
         }
 
-        $sth = $this->dbh->prepare("GRANT ALL ON radius.* TO ?@? IDENTIFIED BY ?");
-        if ($sth->execute([$username, $ipAddress, $password]))
-        {
-            $sth = $this->dbh->prepare("FLUSH PRIVILEGES");
-            $sth->execute();
-            $this->climate->lightMagenta("Added a user with the username $username and the password $password. Copy this username and password, you'll need it!");
+        $stc = $this->dbh->prepare("CREATE USER ?@? IDENTIFIED BY ?");
+        $sth = $this->dbh->prepare("GRANT ALL ON radius.* TO ?@?");
+        $success = true;
+        for ($i=0; $i < count($ipAddresses); $i++) {
+            if (!$stc->execute([$username, $ipAddresses[$i], $password]) || !$sth->execute([$username, $ipAddresses[$i]]))
+            {
+                $this->climate->shout("Failed to create the user!");
+                $success = false;
+                break;
+            }
         }
-        else
-        {
-            $this->climate->shout("Failed to create the user!");
+        if ($success) {
+            $this->dbh->prepare("FLUSH PRIVILEGES")->execute();
+            $this->climate->lightMagenta("Added a user with the username $username and the password $password. Copy this username and password, you'll need it!");
         }
     }
 
