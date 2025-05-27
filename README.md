@@ -1,11 +1,11 @@
-# This tool is deprecated and should no longer be used, as Ubuntu 16 and FreeRADIUS 2 are out of date. Please check out the [FreeRADIUS HOWTO](https://wiki.freeradius.org/guide/HOWTO) - Sonar just requires a MySQL backed FreeRADIUS server to function.
+# ~~This tool is deprecated and should no longer be used, as Ubuntu 16 and FreeRADIUS 2 are out of date.~~ Please check out the [FreeRADIUS HOWTO](https://wiki.freeradius.org/guide/HOWTO) - Sonar just requires a MySQL backed FreeRADIUS server to function.
 
 # FreeRADIUS Genie
 An installer to setup and configure FreeRADIUS for use with Sonar.
 
 ## Getting started
 
-This installer is designed to be run on [Ubuntu 16.04 64bit](http://www.ubuntu.com/download/server), but should work on most versions of Ubuntu. Download and install Ubuntu on the server you wish to run FreeRADIUS on. If you want to host it online, I recommend [Digital Ocean](https://m.do.co/c/84841b1bca8e).
+This installer is designed to be run on [Ubuntu 24.04 64bit](http://www.ubuntu.com/download/server) with FreeRADIUS 3, but should work on most versions of Ubuntu. Download and install Ubuntu on the server you wish to run FreeRADIUS on. If you want to host it online, I recommend [Digital Ocean](https://m.do.co/c/84841b1bca8e).
 
 Once Ubuntu is installed, SSH in and run the following commands to prepare installation:
 
@@ -122,7 +122,7 @@ If you ever need to add a new user, view the existing users, or remove a user, y
 
 ### Linking your FreeRADIUS server to Sonar
 
-Once this configuration is done, we need to add the RADIUS server into Sonar. Inside your Sonar instance, enter the **Network** navigation menu entry and click **RADIUS Server**.
+Once this configuration is done, we need to add the RADIUS server into Sonar. Inside your Sonar instance, go to **Settings** and enter the **Networking** navigation menu entry and click **RADIUS Servers**.
 
 ![Configuring Sonar](https://github.com/SonarSoftware/freeradius_genie/blob/master/images/sonar_config.png)
 
@@ -177,7 +177,7 @@ It's possible to further secure your FreeRADIUS installation with a couple of st
 
 ### Configuring the connectivity between Sonar and FreeRADIUS to use TLS
 
-Configuring Sonar to use TLS to connect to the SQL server backing FreeRADIUS will ensure all data transferred is encrypted. The overhead is minimal, it just requires some effort to do the initial setup and make the necessary changes in Sonar. This guide assumes you have followed the steps above, you're using Ubuntu 16.04 and MariaDB.
+Configuring Sonar to use TLS to connect to the SQL server backing FreeRADIUS will ensure all data transferred is encrypted. The overhead is minimal, it just requires some effort to do the initial setup and make the necessary changes in Sonar. This guide assumes you have followed the steps above, you're using Ubuntu 24.04 and MariaDB.
 
 In order for SSL connectivity to work, your RADIUS server must be entered into Sonar with a hostname (e.g. **radius.sonar.software**) and not an IP address. The certificate we generate below **must** match the hostname exactly.
 
