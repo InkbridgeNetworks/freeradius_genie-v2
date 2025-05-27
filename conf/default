@@ -512,10 +512,6 @@ authorize {
 #	Autz-Type New-TLS-Connection {
 #		  ok
 #	}
-	if(User-Name){
-        	if("%{sql:UPDATE radacct set acctstoptime=ADDDATE(acctstarttime,INTERVAL acctsessiontime SECOND), acctterminatecause='Clear-Stale Session' WHERE username='%{User-Name}' and callingstationid='%{Calling-Station-Id}' and acctstoptime is NULL}"){
-        	}
-    	}
 }
 
 
@@ -1078,6 +1074,10 @@ post-auth {
 			&EAP-Key-Name := &reply:EAP-Session-Id
 		}
 	}
+	if(User-Name){
+        	if("%{sql:UPDATE radacct set acctstoptime=ADDDATE(acctstarttime,INTERVAL acctsessiontime SECOND), acctterminatecause='Clear-Stale Session' WHERE username='%{User-Name}' and callingstationid='%{Calling-Station-Id}' and acctstoptime is NULL}"){
+        	}
+    	}
 }
 
 #
