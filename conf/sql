@@ -167,7 +167,7 @@ sql {
 	server = "localhost"
 #	port = 3306
 	login = "radius"
-	password = "radpass"
+	password = $ENV{MYSQL_PASSWORD}
 
 	# Connection info for Mongo
 	# Authentication Without SSL
